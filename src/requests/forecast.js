@@ -35,6 +35,8 @@ async function fetchForecast(location) {
     })
     .catch((error) => {
       console.error(error);
+      const locationName = `${city}, ${country}`;
+      throw new Error(`Failed to fetch forecast for ${locationName}`);
     });
 }
 

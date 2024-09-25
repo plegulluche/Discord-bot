@@ -34,42 +34,44 @@ const data = new SlashCommandBuilder()
 async function execute(interaction) {
   // Trigger an ephemeral message saying that the bot is thinking ...
   // This is useful for long running commands
-  // Act as initial response to confirm to discord taht we did receive the interaction 
+  // Act as initial response to confirm to discord taht we did receive the interaction
   // We have 15 minutes to respond to the interaction
   await interaction.deferReply();
 
   const location = interaction.options.getString("location");
   const units = interaction.options.getString("units") || "metric";
   const isMetric = units === "metric";
+  try {
+    const { weatherData, locationName } = await fetchForecast(location);
 
-  const { weatherData, locationName } = await fetchForecast(location);
-
-  const embed = new EmbedBuilder()
-    .setColor(0x3f704d)
-    .setTitle(`Weather forecast for ${locationName}`)
-    .setDescription(`Using the ${units} unit system`)
-    .setTimestamp()
-    .setFooter({
-        text: 'Powered by WeatherAPI.com',
-    });
-  for (const day of weatherData) {
-    const temperatureMin = isMetric
-      ? day.temperatureMinC
-      : day.temperatureMinF;
+    const embed = new EmbedBuilder()
+      .setColor(0x3f704d)
+      .setTitle(`Weather forecast for ${locationName}`)
+      .setDescription(`Using the ${units} unit system`)
+      .setTimestamp()
+      .setFooter({
+        text: "Powered by WeatherAPI.com",
+      });
+    for (const day of weatherData) {
+      const temperatureMin = isMetric
+        ? day.temperatureMinC
+        : day.temperatureMinF;
       const temperatureMax = isMetric
-      ? day.temperatureMaxC
-      : day.temperatureMaxF;
+        ? day.temperatureMaxC
+        : day.temperatureMaxF;
 
-    embed.addField({
+      embed.addFields({
         name: day.date,
-        value: `⬇️ Min: ${temperatureMin}°,⬆️ Max: ${temperatureMax}°`,
-        inline
+        value: `⬇️ Min: ${temperatureMin}°, ⬆️ Max: ${temperatureMax}°`,
+      });
+    }
+    // passing an array because we can send multiple embeds
+    await interaction.editReply({
+      embeds: [embed],
     });
+  } catch (error) {
+    await interaction.editReply(error);
   }
-  // passing an array because we can send multiple embeds
-  await interaction.editReply({
-    embeds: [embed,]
-  });
 }
 
 module.exports = {
