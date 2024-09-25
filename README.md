@@ -2,7 +2,7 @@
 
 A Discord bot created with JavaScript that displays weather forecasts and astronomical information based on the input city and desired metric system.
 
-![GitHub last commit](https://img.shields.io/github/last-commit/plegulluche/discord-weather-bot)
+![GitHub last commit](https://img.shields.io/github/last-commit/plegulluche/discord-bot)
 
 ## Features
 
