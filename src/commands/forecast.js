@@ -1,4 +1,7 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
+const { fetchForecast } = require("../requests/forecast");
+
+
 
 const data = new SlashCommandBuilder()
   .setName("forecast")
