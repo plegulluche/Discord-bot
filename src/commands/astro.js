@@ -28,7 +28,6 @@ async function execute(interaction) {
     const embed = new EmbedBuilder()
       .setColor(0x3f704d)
       .setTitle(`Astronomical forecast for ${locationName}`)
-      .setDescription(`Using the ${units} unit system`)
       .setTimestamp()
       .setFooter({
         text: "Powered by WeatherAPI.com",
