@@ -1,7 +1,5 @@
-const { SlashCommandBuilder } = require("@discordjs/builders");
+const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
 const { fetchForecast } = require("../requests/forecast");
-
-
 
 const data = new SlashCommandBuilder()
   .setName("forecast")
@@ -34,23 +32,44 @@ const data = new SlashCommandBuilder()
   });
 
 async function execute(interaction) {
+  // Trigger an ephemeral message saying that the bot is thinking ...
+  // This is useful for long running commands
+  // Act as initial response to confirm to discord taht we did receive the interaction 
+  // We have 15 minutes to respond to the interaction
+  await interaction.deferReply();
+
   const location = interaction.options.getString("location");
   const units = interaction.options.getString("units") || "metric";
+  const isMetric = units === "metric";
 
-  const forecast = await fetchForecast(location, units);
+  const { weatherData, locationName } = await fetchForecast(location);
 
-  const forecastEmbed = {
-    color: 0x0099ff,
-    title: `Weather forecast for ${forecast.locationName}`,
-    fields: forecast.weatherData.map((forecastDay) => {
-      return {
-        name: forecastDay.date,
-        value: `Min: ${forecastDay.temperatureMinC}°C / ${forecastDay.temperatureMinF}°F\nMax: ${forecastDay.temperatureMaxC}°C / ${forecastDay.temperatureMaxF}°F`,
-      };
-    }),
-  };
+  const embed = new EmbedBuilder()
+    .setColor(0x3f704d)
+    .setTitle(`Weather forecast for ${locationName}`)
+    .setDescription(`Using the ${units} unit system`)
+    .setTimestamp()
+    .setFooter({
+        text: 'Powered by WeatherAPI.com',
+    });
+  for (const day of weatherData) {
+    const temperatureMin = isMetric
+      ? day.temperatureMinC
+      : day.temperatureMinF;
+      const temperatureMax = isMetric
+      ? day.temperatureMaxC
+      : day.temperatureMaxF;
 
-  await interaction.reply({ embeds: [forecastEmbed] });
+    embed.addField({
+        name: day.date,
+        value: `⬇️ Min: ${temperatureMin}°,⬆️ Max: ${temperatureMax}°`,
+        inline
+    });
+  }
+  // passing an array because we can send multiple embeds
+  await interaction.editReply({
+    embeds: [embed,]
+  });
 }
 
 module.exports = {
