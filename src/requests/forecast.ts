@@ -1,9 +1,12 @@
 import axios from "axios";
+import { ForecastData, ForecastResponse } from "./forecast.type";
 
-const URL = 'https://api.weatherapi.com/v1/forecast.json'
-const FORECAST_DAYS = 5
+const URL = "https://api.weatherapi.com/v1/forecast.json";
+const FORECAST_DAYS = 5;
 
-export async function fetchForecast(location: any) {
+export async function fetchForecast(
+  location: string
+): Promise<ForecastResponse> {
   return await axios({
     url: URL,
     method: "get",
@@ -18,8 +21,9 @@ export async function fetchForecast(location: any) {
       const city = response.data.location.name;
       const country = response.data.location.country;
       const locationName = `${city}, ${country}`;
-      const weatherData = response.data.forecast.forecastday.map((forecastDay: any)=>{
-        return {
+      const weatherData: ForecastData[] =
+        response.data.forecast.forecastday.map((forecastDay: any) => {
+          return {
             date: forecastDay.date,
             temperatureMinC: forecastDay.day.mintemp_c,
             temperatureMaxC: forecastDay.day.maxtemp_c,
@@ -30,18 +34,16 @@ export async function fetchForecast(location: any) {
             sunsetTime: forecastDay.astro.sunset,
             moonriseTime: forecastDay.astro.moonrise,
             moonsetTime: forecastDay.astro.moonset,
-        }
-      });
+          };
+        });
 
       return {
         locationName,
         weatherData,
-      }
+      };
     })
     .catch((error) => {
       console.error(error);
-      const locationName = `${city}, ${country}`;
-      throw new Error(`Failed to fetch forecast for ${locationName}`);
+      throw new Error(`Failed to fetch forecast for location: ${location}`);
     });
 }
-

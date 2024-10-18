@@ -1,7 +1,11 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
-const { fetchForecast } = require("../requests/forecast");
+import {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  CommandInteraction,
+} from "discord.js";
+import { fetchForecast } from "../requests/forecast";
 
-const data = new SlashCommandBuilder()
+export const data = new SlashCommandBuilder()
   .setName("astro")
   .setDescription("Replies with the astronomical information for the day")
   .addStringOption((option) => {
@@ -13,17 +17,17 @@ const data = new SlashCommandBuilder()
       .setRequired(true);
   });
 
-async function execute(interaction) {
+export async function execute(interaction: CommandInteraction): Promise<void> {
   // Trigger an ephemeral message saying that the bot is thinking ...
   // This is useful for long running commands
   // Act as initial response to confirm to discord taht we did receive the interaction
   // We have 15 minutes to respond to the interaction
   await interaction.deferReply();
 
-  const location = interaction.options.getString("location");
+  const location = interaction.options.get("location")?.value as string;
 
   try {
-    const { weatherData, locationName } = await fetchForecast(location);
+    const { weatherData, locationName }: any = await fetchForecast(location);
 
     const embed = new EmbedBuilder()
       .setColor(0x3f704d)
@@ -43,11 +47,14 @@ async function execute(interaction) {
       embeds: [embed],
     });
   } catch (error) {
-    await interaction.editReply(error);
+    if (error instanceof Error) {
+      await interaction.editReply({
+        content: `An error occurred: ${error.message}`,
+      });
+    } else {
+      await interaction.editReply({
+        content: "An unknown error occurred.",
+      });
+    }
   }
 }
-
-module.exports = {
-  execute,
-  data,
-};

@@ -6,7 +6,7 @@ dotenv.config();
 import { clientReadyHandler } from "./events/clientReady";
 import * as pingCommand from "./commands/ping";
 import * as forecastCommand from "./commands/forecast";
-import astroCommand from "./commands/astro";
+import * as astroCommand from "./commands/astro";
 import { interactionCreateHandler } from "./events/interactionCreateEvent";
 
 const client: Client = new Client({

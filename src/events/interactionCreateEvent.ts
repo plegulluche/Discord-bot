@@ -1,4 +1,6 @@
-async function interactionCreateHandler(interaction) {
+import { Interaction } from "discord.js";
+
+export async function interactionCreateHandler(interaction: Interaction): Promise<void> {
   if (!interaction.isChatInputCommand()) {
     return;
   }
@@ -30,4 +32,3 @@ async function interactionCreateHandler(interaction) {
   }
 }
 
-module.exports = { interactionCreateHandler };
