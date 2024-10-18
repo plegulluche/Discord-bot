@@ -1,4 +1,5 @@
-import { Collection } from "discord.js";
+import "discord.js";
+import { Collection, CommandInteraction } from "discord.js";
 
 // We are extending the `Client` class from the discord.js library to add a custom property `commands`.
 // By default, discord.js doesn't include a `commands` property in the Client class.
@@ -15,6 +16,6 @@ declare module "discord.js" {
     // We add a `commands` property to the Client instance.
     // It is a Collection where the key is the command's name (a string),
     // and the value is any type (this could be further refined depending on how you structure your commands).
-    commands: Collection<string, any>;
+    commands: Collection<string, { data: { name: string }, execute: (interaction: CommandInteraction) => Promise<void> }>;
   }
 }
