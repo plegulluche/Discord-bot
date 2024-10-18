@@ -1,7 +1,11 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
-const { fetchForecast } = require("../requests/forecast");
+import {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  CommandInteraction,
+} from "discord.js";
+import { fetchForecast } from "../requests/forecast";
 
-const data = new SlashCommandBuilder()
+export const data = new SlashCommandBuilder()
   .setName("forecast")
   .setDescription("Replies with the weather forecast for a specific location")
   .addStringOption((option) => {
@@ -31,18 +35,18 @@ const data = new SlashCommandBuilder()
       );
   });
 
-async function execute(interaction) {
+export async function execute(interaction: CommandInteraction): Promise<void> {
   // Trigger an ephemeral message saying that the bot is thinking ...
   // This is useful for long running commands
   // Act as initial response to confirm to discord taht we did receive the interaction
   // We have 15 minutes to respond to the interaction
   await interaction.deferReply();
 
-  const location = interaction.options.getString("location");
-  const units = interaction.options.getString("units") || "metric";
+  const location = interaction.options.get("location", true)?.value as string;
+  const units = (interaction.options.get("units")?.value as string) || "metric";
   const isMetric = units === "metric";
   try {
-    const { weatherData, locationName } = await fetchForecast(location);
+    const { weatherData, locationName }: any = await fetchForecast(location);
 
     const embed = new EmbedBuilder()
       .setColor(0x3f704d)
@@ -70,11 +74,14 @@ async function execute(interaction) {
       embeds: [embed],
     });
   } catch (error) {
-    await interaction.editReply(error);
+    if (error instanceof Error) {
+      await interaction.editReply({
+        content: `An error occurred: ${error.message}`,
+      });
+    } else {
+      await interaction.editReply({
+        content: "An unknown error occurred.",
+      });
+    }
   }
 }
-
-module.exports = {
-  execute,
-  data,
-};

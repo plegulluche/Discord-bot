@@ -1,9 +1,9 @@
-const axios = require("axios");
+import axios from "axios";
 
 const URL = 'https://api.weatherapi.com/v1/forecast.json'
 const FORECAST_DAYS = 5
 
-async function fetchForecast(location) {
+export async function fetchForecast(location: any) {
   return await axios({
     url: URL,
     method: "get",
@@ -18,7 +18,7 @@ async function fetchForecast(location) {
       const city = response.data.location.name;
       const country = response.data.location.country;
       const locationName = `${city}, ${country}`;
-      const weatherData = response.data.forecast.forecastday.map((forecastDay)=>{
+      const weatherData = response.data.forecast.forecastday.map((forecastDay: any)=>{
         return {
             date: forecastDay.date,
             temperatureMinC: forecastDay.day.mintemp_c,
@@ -45,4 +45,3 @@ async function fetchForecast(location) {
     });
 }
 
-module.exports = { fetchForecast };
