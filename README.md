@@ -67,10 +67,10 @@ npm start
 
 ## TODOs
 
-- Use TypeScript
+- ~~Use TypeScript~~
 - Integrate game calendar feature
 - Include more weather features
-- Include WhatsApp notifications when a friend wants to play a game while the buddy is offline
+- Include WhatsApp notifications when a friend wants to play a game while the buddy is offline (ongoing)
 - Deploy
 - Scaling
 
