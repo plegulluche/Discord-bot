@@ -1,6 +1,7 @@
 # Discord Weather Bot
 
-A Discord bot created with JavaScript that displays weather forecasts and astronomical information based on the input city and desired metric system.
+This discord bot started as a learning project and i decided to improve it after my gaming mates asked me to add more features.
+So now i use this project to improve my mates quality of life and improve my skills on tests , devops and backend developement on Typescript.
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/plegulluche/discord-bot)
 
@@ -64,12 +65,14 @@ npm start
 - discord.js
 - axios
 - dotenv
+- jest
 
 ## TODOs
 
 - ~~Use TypeScript~~
+- Continue the developement using TDD with jest.(ongoing).
+- Add documentation( ongoing) .
 - Integrate game calendar feature
-- Include more weather features
 - Include WhatsApp notifications when a friend wants to play a game while the buddy is offline (ongoing)
 - Deploy
 - Scaling
